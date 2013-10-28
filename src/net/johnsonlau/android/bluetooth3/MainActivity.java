@@ -6,17 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
 
     BluetoothAdapter mBluetoothAdapter;
+
+    private ListView mBondedDevicesLv;
 
     public static int REQUEST_ENABLE_BT;
 
@@ -30,6 +33,8 @@ public class MainActivity extends ListActivity {
     }
 
     private void init() {
+        mBondedDevicesLv = (ListView) findViewById(R.id.bonded_devices);
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "no Bluetooth radio", Toast.LENGTH_LONG);
@@ -54,8 +59,8 @@ public class MainActivity extends ListActivity {
             list.add(dev);
         }
 
-        setListAdapter(new SimpleAdapter(this, list, R.layout.device_item,
+        mBondedDevicesLv.setAdapter( new SimpleAdapter(this, list, R.layout.listitem_bonded_device,
                 new String[] { "name", "mac" },
-                new int[] { R.id.name, R.id.mac }));
+                new int[] { R.id.bonded_device_name, R.id.bonded_device_mac }));
     }
 }

@@ -9,7 +9,7 @@
             android:layout_height="wrap_content" 
             android:text="" />
     <ListView
-            android:id="@id/android:list"    
+            android:id="@+id/bonded_devices"    
             android:layout_width="fill_parent" 
             android:layout_height="fill_parent"
             android:transcriptMode="alwaysScroll"
