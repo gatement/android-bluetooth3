@@ -9,7 +9,10 @@ import java.util.Set;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -23,14 +26,35 @@ public class MainActivity extends Activity {
 
     public static int REQUEST_ENABLE_BT;
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent
+                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // mArrayAdapter .add(device.getName() + "\n" +
+                // device.getAddress());
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
         init();
+
         showBondedDevices();
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
     }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+    };
 
     private void init() {
         mBondedDevicesLv = (ListView) findViewById(R.id.bonded_devices);
@@ -59,8 +83,8 @@ public class MainActivity extends Activity {
             list.add(dev);
         }
 
-        mBondedDevicesLv.setAdapter( new SimpleAdapter(this, list, R.layout.listitem_bonded_device,
-                new String[] { "name", "mac" },
-                new int[] { R.id.bonded_device_name, R.id.bonded_device_mac }));
+        mBondedDevicesLv.setAdapter(new SimpleAdapter(this, list,
+                R.layout.listitem_device, new String[] { "name", "mac" },
+                new int[] { R.id.device_name, R.id.device_mac }));
     }
 }
